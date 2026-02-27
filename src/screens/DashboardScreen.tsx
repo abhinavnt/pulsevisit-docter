@@ -4,13 +4,13 @@ import { HistoryScreen } from './HistoryScreen';
 import { ProfileScreen } from './ProfileScreen';
 import { WalletScreen } from './WalletScreen';
 
-export function DashboardScreen({ 
+export function DashboardScreen({
   activeTab,
   setActiveTab,
-  onIncomingRequest, 
+  onIncomingRequest,
   onRequestPayout,
   onLogout
-}: { 
+}: {
   activeTab: 'home' | 'history' | 'wallet' | 'profile',
   setActiveTab: (tab: 'home' | 'history' | 'wallet' | 'profile') => void,
   onIncomingRequest: () => void,
@@ -40,9 +40,9 @@ export function DashboardScreen({
       case 'home':
       default:
         return (
-          <HomeTab 
-            isOnline={isOnline} 
-            setIsOnline={setIsOnline} 
+          <HomeTab
+            isOnline={isOnline}
+            setIsOnline={setIsOnline}
             onHistory={() => setActiveTab('history')}
             onWallet={() => setActiveTab('wallet')}
           />
@@ -51,13 +51,14 @@ export function DashboardScreen({
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#F8FAFC] relative">
+    <div className="flex flex-col h-full bg-[#F8FAFC]">
+      {/* Tab content — scrollable area */}
       <div className="flex-1 overflow-hidden">
         {renderTabContent()}
       </div>
-      
-      {/* Bottom Nav */}
-      <div className="absolute bottom-0 w-full bg-white border-t border-slate-100 px-6 py-4 flex justify-between items-center pb-8 z-40">
+
+      {/* Bottom Nav — always flush at bottom */}
+      <div className="shrink-0 bg-white border-t border-slate-100 px-6 py-3 flex justify-between items-center z-40">
         <button onClick={() => setActiveTab('home')} className={`flex flex-col items-center gap-1 ${activeTab === 'home' ? 'text-[#0F3D73]' : 'text-slate-400'}`}>
           <Activity className="w-6 h-6" />
           <span className="text-[10px] font-medium">Home</span>
@@ -81,12 +82,12 @@ export function DashboardScreen({
 
 function HomeTab({ isOnline, setIsOnline, onHistory, onWallet }: any) {
   return (
-    <div className="flex flex-col h-full overflow-y-auto pb-28">
+    <div className="flex flex-col h-full overflow-y-auto pb-4">
       {/* Header */}
-      <div className="bg-[#0F3D73] px-6 pt-12 pb-6 rounded-b-[32px] text-white shadow-lg relative overflow-hidden shrink-0">
+      <div className="bg-[#0F3D73] px-6 pt-6 pb-5 rounded-b-[32px] text-white shadow-lg relative overflow-hidden shrink-0">
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
-        
-        <div className="flex justify-between items-center relative z-10 mb-8 mt-4">
+
+        <div className="flex justify-between items-center relative z-10 mb-4 mt-0">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/10 rounded-full border border-white/20 p-0.5">
               <img src="https://picsum.photos/seed/doc/100/100" className="w-full h-full rounded-full object-cover" alt="Doctor" referrerPolicy="no-referrer" />
@@ -105,13 +106,13 @@ function HomeTab({ isOnline, setIsOnline, onHistory, onWallet }: any) {
         </div>
 
         <div className="bg-white rounded-2xl p-1 flex items-center relative z-10 shadow-inner">
-          <button 
+          <button
             onClick={() => setIsOnline(false)}
             className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${!isOnline ? 'bg-slate-100 text-slate-700 shadow-sm' : 'text-slate-500'}`}
           >
             Offline
           </button>
-          <button 
+          <button
             onClick={() => setIsOnline(true)}
             className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${isOnline ? 'bg-[#1FA97A] text-white shadow-md' : 'text-slate-500'}`}
           >
@@ -121,7 +122,7 @@ function HomeTab({ isOnline, setIsOnline, onHistory, onWallet }: any) {
       </div>
 
       <div className="px-6 py-6 space-y-6">
-        
+
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
@@ -164,7 +165,7 @@ function HomeTab({ isOnline, setIsOnline, onHistory, onWallet }: any) {
         {/* Quick Actions */}
         <div className="space-y-3">
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Quick Access</h3>
-          
+
           <button onClick={onHistory} className="w-full bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4 active:scale-[0.98] transition-all">
             <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center shrink-0">
               <FileText className="w-6 h-6 text-slate-600" />
