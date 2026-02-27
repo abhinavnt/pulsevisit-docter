@@ -17,8 +17,8 @@ export function VerificationScreen({ onNext, specialty }: { onNext: () => void, 
   );
 
   return (
-    <div className="flex flex-col h-full bg-[#F8FAFC]">
-      <div className="px-6 pt-12 pb-4 bg-white border-b border-slate-100 mt-12">
+    <div className="flex flex-col min-h-full bg-[#F8FAFC]">
+      <div className="px-6 pt-8 pb-4 bg-white border-b border-slate-100">
         <div className="flex items-center gap-2 mb-4">
           <div className="h-2 flex-1 bg-[#1FA97A] rounded-full"></div>
           <div className="h-2 flex-1 bg-[#0F3D73] rounded-full"></div>
@@ -35,7 +35,7 @@ export function VerificationScreen({ onNext, specialty }: { onNext: () => void, 
           <DocumentUpload title="MD Certificate" subtitle="Post-graduate degree certificate" />
         )}
         <DocumentUpload title="State Council Registration" subtitle="Valid registration certificate" />
-        
+
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-6">
           <p className="text-xs text-amber-800 leading-relaxed">
             All documents must be clear, readable, and in PDF or JPEG format. Max file size: 5MB per document.
@@ -43,7 +43,7 @@ export function VerificationScreen({ onNext, specialty }: { onNext: () => void, 
         </div>
       </div>
 
-      <div className="p-6 bg-white border-t border-slate-100 pb-12">
+      <div className="p-6 bg-white border-t border-slate-100">
         <button onClick={onNext} className="w-full bg-[#0F3D73] text-white rounded-xl py-4 font-semibold shadow-lg shadow-[#0F3D73]/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all">
           Continue <ChevronRight className="w-5 h-5" />
         </button>

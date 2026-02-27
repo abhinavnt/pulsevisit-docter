@@ -2,8 +2,8 @@ import { UploadCloud, Camera, Building2, CreditCard } from 'lucide-react';
 
 export function KycScreen({ onNext }: { onNext: () => void }) {
   return (
-    <div className="flex flex-col h-full bg-[#F8FAFC]">
-      <div className="px-6 pt-12 pb-4 bg-white border-b border-slate-100 mt-12">
+    <div className="flex flex-col min-h-full bg-[#F8FAFC]">
+      <div className="px-6 pt-8 pb-4 bg-white border-b border-slate-100">
         <div className="flex items-center gap-2 mb-4">
           <div className="h-2 flex-1 bg-[#1FA97A] rounded-full"></div>
           <div className="h-2 flex-1 bg-[#1FA97A] rounded-full"></div>
@@ -14,7 +14,7 @@ export function KycScreen({ onNext }: { onNext: () => void }) {
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-        
+
         <div className="space-y-4">
           <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
             <Building2 className="w-4 h-4 text-slate-400" /> Bank Details
@@ -30,7 +30,7 @@ export function KycScreen({ onNext }: { onNext: () => void }) {
           <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-slate-400" /> Identity
           </h2>
-          
+
           <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
             <div className="flex-1">
               <h3 className="font-semibold text-slate-900 text-sm">PAN Card</h3>
@@ -54,7 +54,7 @@ export function KycScreen({ onNext }: { onNext: () => void }) {
 
       </div>
 
-      <div className="p-6 bg-white border-t border-slate-100 pb-12">
+      <div className="p-6 bg-white border-t border-slate-100">
         <button onClick={onNext} className="w-full bg-[#1FA97A] text-white rounded-xl py-4 font-semibold shadow-lg shadow-[#1FA97A]/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all">
           Submit Application
         </button>

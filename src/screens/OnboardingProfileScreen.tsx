@@ -5,8 +5,8 @@ export function OnboardingProfileScreen({ onNext }: { onNext: (specialty: string
   const [selectedSpecialty, setSelectedSpecialty] = useState('MBBS');
 
   return (
-    <div className="flex flex-col h-full bg-[#F8FAFC]">
-      <div className="px-6 pt-12 pb-4 bg-white border-b border-slate-100 mt-12">
+    <div className="flex flex-col min-h-full bg-[#F8FAFC]">
+      <div className="px-6 pt-8 pb-4 bg-white border-b border-slate-100">
         <div className="flex items-center gap-2 mb-4">
           <div className="h-2 flex-1 bg-[#0F3D73] rounded-full"></div>
           <div className="h-2 flex-1 bg-slate-100 rounded-full"></div>
@@ -33,7 +33,7 @@ export function OnboardingProfileScreen({ onNext }: { onNext: (specialty: string
             <label className="text-sm font-medium text-slate-700">Full Name</label>
             <input type="text" className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0F3D73]/20 focus:border-[#0F3D73]" placeholder="Dr. John Doe" />
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-slate-700">State</label>
@@ -51,7 +51,7 @@ export function OnboardingProfileScreen({ onNext }: { onNext: (specialty: string
 
           <div className="space-y-1.5">
             <label className="text-sm font-medium text-slate-700">Specialty</label>
-            <select 
+            <select
               value={selectedSpecialty}
               onChange={(e) => setSelectedSpecialty(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#0F3D73]/20 focus:border-[#0F3D73] appearance-none"
@@ -68,7 +68,7 @@ export function OnboardingProfileScreen({ onNext }: { onNext: (specialty: string
         </div>
       </div>
 
-      <div className="p-6 bg-white border-t border-slate-100 pb-12">
+      <div className="p-6 bg-white border-t border-slate-100">
         <button onClick={() => onNext(selectedSpecialty)} className="w-full bg-[#0F3D73] text-white rounded-xl py-4 font-semibold shadow-lg shadow-[#0F3D73]/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all">
           Continue <ChevronRight className="w-5 h-5" />
         </button>
