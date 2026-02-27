@@ -3,8 +3,8 @@ import { MapPin, Clock, Activity, X } from 'lucide-react';
 export function IncomingRequestModal({ onAccept, onReject }: { onAccept: () => void, onReject: () => void }) {
   return (
     <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-end animate-in fade-in duration-200">
-      <div className="w-full bg-white rounded-t-[32px] p-6 pb-12 animate-in slide-in-from-bottom-full duration-300">
-        
+      <div className="w-full bg-white rounded-t-[32px] p-6 animate-in slide-in-from-bottom-full duration-300">
+
         <div className="flex justify-between items-start mb-6">
           <div>
             <div className="inline-flex items-center gap-1.5 bg-red-50 text-red-600 px-3 py-1 rounded-full text-xs font-bold mb-3 animate-pulse">
@@ -27,7 +27,7 @@ export function IncomingRequestModal({ onAccept, onReject }: { onAccept: () => v
               <p className="text-slate-500 text-sm">Male, 45 years</p>
             </div>
           </div>
-          
+
           <div className="space-y-3">
             <div className="flex items-start gap-3">
               <Activity className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
@@ -41,6 +41,15 @@ export function IncomingRequestModal({ onAccept, onReject }: { onAccept: () => v
               <div>
                 <p className="text-xs text-slate-500 font-medium">Location (2.4 km away)</p>
                 <p className="text-sm font-semibold text-slate-900">124 Park Avenue, Block C</p>
+              </div>
+            </div>
+            {/* Map thumbnail */}
+            <div className="rounded-xl overflow-hidden border border-slate-200 h-24 w-full relative">
+              <img src="/map_preview.png" className="w-full h-full object-cover" alt="Map preview" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-7 h-7 bg-[#0F3D73] rounded-full border-2 border-white shadow-md flex items-center justify-center">
+                  <MapPin className="w-4 h-4 text-white" />
+                </div>
               </div>
             </div>
           </div>

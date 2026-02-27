@@ -5,7 +5,7 @@ export function NavigationScreen({ onArrived }: { onArrived: () => void }) {
     <div className="flex flex-col h-full bg-slate-200 relative">
       {/* Map Mockup */}
       <div className="absolute inset-0 z-0">
-        <img src="https://picsum.photos/seed/map/400/800" className="w-full h-full object-cover opacity-60 mix-blend-multiply" alt="Map" referrerPolicy="no-referrer" />
+        <img src="/map_preview.png" className="w-full h-full object-cover" alt="Map" />
         {/* Route Line Mock */}
         <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
           <path d="M 200 600 Q 250 400 150 200" fill="none" stroke="#0F3D73" strokeWidth="6" strokeLinecap="round" strokeDasharray="10,10" className="animate-[dash_1s_linear_infinite]" />
@@ -30,7 +30,7 @@ export function NavigationScreen({ onArrived }: { onArrived: () => void }) {
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] p-6 pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-10">
+      <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[32px] p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-10">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="font-bold text-lg text-slate-900">Michael Roberts</h3>

@@ -14,11 +14,11 @@ export function PayoutRequestScreen({ onBack, onConfirm }: { onBack: () => void,
       </div>
 
       <div className="flex-1 px-6 py-6 space-y-6">
-        
+
         <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm text-center">
           <p className="text-slate-500 text-sm font-medium mb-1">Eligible Amount</p>
           <h2 className="text-4xl font-bold text-slate-900 mb-6">₹1,250.00</h2>
-          
+
           <div className="bg-slate-50 rounded-xl p-4 flex items-start gap-3 text-left">
             <Calendar className="w-5 h-5 text-[#0F3D73] shrink-0 mt-0.5" />
             <div>
@@ -41,15 +41,14 @@ export function PayoutRequestScreen({ onBack, onConfirm }: { onBack: () => void,
 
       </div>
 
-      <div className="p-6 bg-white border-t border-slate-100 pb-12">
-        <button 
-          onClick={onConfirm} 
+      <div className="p-6 bg-white border-t border-slate-100">
+        <button
+          onClick={onConfirm}
           disabled={!isMonday}
-          className={`w-full rounded-xl py-4 font-semibold shadow-lg flex items-center justify-center gap-2 transition-all ${
-            isMonday 
-              ? 'bg-[#0F3D73] text-white shadow-[#0F3D73]/20 active:scale-[0.98]' 
+          className={`w-full rounded-xl py-4 font-semibold shadow-lg flex items-center justify-center gap-2 transition-all ${isMonday
+              ? 'bg-[#0F3D73] text-white shadow-[#0F3D73]/20 active:scale-[0.98]'
               : 'bg-slate-200 text-slate-400 shadow-none cursor-not-allowed'
-          }`}
+            }`}
         >
           Submit Request
         </button>

@@ -11,16 +11,16 @@ export function ConsultationOngoingScreen({ onUploadPrescription }: { onUploadPr
           </div>
           <div className="text-xl font-mono font-bold">14:23</div>
         </div>
-        
+
         <h1 className="text-2xl font-bold mb-1">Consultation Ongoing</h1>
         <p className="text-blue-200 text-sm">Patient: Michael Roberts</p>
       </div>
 
       <div className="flex-1 px-6 py-8 space-y-8">
-        
+
         {/* Timeline */}
         <div className="relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-[11px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-[#1FA97A] before:via-slate-200 before:to-transparent">
-          
+
           <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
             <div className="flex items-center justify-center w-6 h-6 rounded-full border-4 border-white bg-[#1FA97A] text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 absolute -left-[27px]">
               <CheckCircle2 className="w-3 h-3" />
@@ -61,7 +61,7 @@ export function ConsultationOngoingScreen({ onUploadPrescription }: { onUploadPr
 
       </div>
 
-      <div className="p-6 bg-white border-t border-slate-100 pb-12">
+      <div className="p-6 bg-white border-t border-slate-100">
         <button onClick={onUploadPrescription} className="w-full bg-[#0F3D73] text-white rounded-xl py-4 font-semibold shadow-lg shadow-[#0F3D73]/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all">
           <FileText className="w-5 h-5" /> Upload Prescription
         </button>
