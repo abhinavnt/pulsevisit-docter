@@ -6,14 +6,14 @@ export function HistoryScreen() {
       <div className="px-6 pt-12 pb-4 bg-white border-b border-slate-100 shrink-0">
         <h1 className="text-xl font-bold text-slate-900">Consultation History</h1>
       </div>
-      
+
       <div className="flex-1 overflow-y-auto pb-28 px-6 py-6 space-y-4">
         {/* History Card 1 */}
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex justify-between items-start mb-3">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-slate-100 rounded-full overflow-hidden">
-                <img src="https://picsum.photos/seed/p1/100/100" className="w-full h-full object-cover" alt="Patient" referrerPolicy="no-referrer" />
+                <img src="/patient_emma.png" className="w-full h-full object-cover" alt="Patient" />
               </div>
               <div>
                 <h4 className="font-bold text-slate-900">Emma Thompson</h4>
@@ -42,7 +42,7 @@ export function HistoryScreen() {
           <div className="flex justify-between items-start mb-3">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-slate-100 rounded-full overflow-hidden">
-                <img src="https://picsum.photos/seed/p4/100/100" className="w-full h-full object-cover" alt="Patient" referrerPolicy="no-referrer" />
+                <img src="/patient_michael.png" className="w-full h-full object-cover" alt="Patient" />
               </div>
               <div>
                 <h4 className="font-bold text-slate-900">Michael Roberts</h4>
@@ -71,7 +71,7 @@ export function HistoryScreen() {
           <div className="flex justify-between items-start mb-3">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-slate-100 rounded-full overflow-hidden">
-                <img src="https://picsum.photos/seed/p3/100/100" className="w-full h-full object-cover" alt="Patient" referrerPolicy="no-referrer" />
+                <img src="/patient_david.png" className="w-full h-full object-cover" alt="Patient" />
               </div>
               <div>
                 <h4 className="font-bold text-slate-900">David Chen</h4>

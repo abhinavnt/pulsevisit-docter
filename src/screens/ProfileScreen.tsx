@@ -19,13 +19,13 @@ export function ProfileScreen({ onLogout }: { onLogout: () => void }) {
       <div className="px-6 pt-12 pb-4 bg-white border-b border-slate-100 shrink-0">
         <h1 className="text-xl font-bold text-slate-900">Profile</h1>
       </div>
-      
+
       <div className="flex-1 overflow-y-auto px-6 py-6 pb-28">
-        
+
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col items-center text-center mb-6 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-24 bg-[#0F3D73]/5"></div>
           <div className="w-24 h-24 bg-white rounded-full p-1 border border-slate-200 shadow-sm mb-3 relative z-10">
-            <img src="https://picsum.photos/seed/doc/200/200" className="w-full h-full rounded-full object-cover" alt="Doctor" referrerPolicy="no-referrer" />
+            <img src="/doctor_profile.png" className="w-full h-full rounded-full object-cover" alt="Doctor" />
             <div className="absolute bottom-0 right-0 w-6 h-6 bg-[#1FA97A] rounded-full border-2 border-white flex items-center justify-center">
               <ShieldCheck className="w-3 h-3 text-white" />
             </div>
@@ -66,11 +66,11 @@ export function ProfileScreen({ onLogout }: { onLogout: () => void }) {
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 px-1">Account</h3>
           <MenuItem icon={User} title="Personal Information" subtitle="Update your details" />
           <MenuItem icon={FileText} title="Documents & KYC" subtitle="Manage uploaded proofs" />
-          
+
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3 mt-6 px-1">Preferences</h3>
           <MenuItem icon={Settings} title="App Settings" subtitle="Notifications, Language" />
           <MenuItem icon={HelpCircle} title="Help & Support" subtitle="FAQs and Contact" />
-          
+
           <div className="mt-6">
             <MenuItem icon={LogOut} title="Log Out" isDestructive={true} onClick={onLogout} />
           </div>

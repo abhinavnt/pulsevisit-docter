@@ -90,7 +90,7 @@ function HomeTab({ isOnline, setIsOnline, onHistory, onWallet }: any) {
         <div className="flex justify-between items-center relative z-10 mb-4 mt-0">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/10 rounded-full border border-white/20 p-0.5">
-              <img src="https://picsum.photos/seed/doc/100/100" className="w-full h-full rounded-full object-cover" alt="Doctor" referrerPolicy="no-referrer" />
+              <img src="/doctor_profile.png" className="w-full h-full rounded-full object-cover" alt="Doctor" />
             </div>
             <div>
               <h2 className="font-semibold text-lg">Dr. Sarah Jenkins</h2>
