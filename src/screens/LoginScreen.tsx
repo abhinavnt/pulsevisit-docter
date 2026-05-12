@@ -13,7 +13,7 @@ export function LoginScreen({ onNext }: { onNext: () => void }) {
         
         <div className="w-full space-y-6">
           <div className="text-center space-y-2">
-            <h1 className="text-2xl font-bold text-slate-900">Doctor Portal</h1>
+            <h1 className="text-2xl font-bold text-slate-900">PulseVisit Provider</h1>
             <p className="text-slate-500">Enter your mobile number to continue</p>
           </div>
 
@@ -23,7 +23,7 @@ export function LoginScreen({ onNext }: { onNext: () => void }) {
                 <label className="text-sm font-medium text-slate-700">Mobile Number</label>
                 <div className="flex gap-3">
                   <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center text-slate-600 font-medium">
-                    +1
+                    +91
                   </div>
                   <input 
                     type="tel" 
