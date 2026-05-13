@@ -106,6 +106,7 @@ export default function App() {
           <NurseDashboardScreen
             activeTab={nurseTab}
             setActiveTab={setNurseTab}
+            onIncomingRequest={() => setShowIncomingRequest(true)}
             onOpenVisit={() => setCurrentScreen('NURSE_VISIT_FLOW')}
             onOpenSkills={() => setCurrentScreen('NURSE_SKILLS')}
             onOpenAvailability={() => setCurrentScreen('NURSE_AVAILABILITY')}
@@ -132,8 +133,12 @@ export default function App() {
       case 'WAITING_PAYMENT':
         return (
           <WaitingPaymentScreen 
-            onSuccess={() => setCurrentScreen('NAVIGATION')}
-            onCancel={() => setCurrentScreen('DASHBOARD')}
+            onSuccess={() => {
+              setCurrentScreen(providerRole === 'nurse' ? 'NURSE_VISIT_FLOW' : 'NAVIGATION');
+            }}
+            onCancel={() => {
+              setCurrentScreen(providerRole === 'nurse' ? 'NURSE_DASHBOARD' : 'DASHBOARD');
+            }}
           />
         );
       case 'NAVIGATION':

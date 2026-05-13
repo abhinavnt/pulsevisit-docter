@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import {
   Activity,
   AlertTriangle,
@@ -22,6 +22,7 @@ import {
   UploadCloud,
   User,
   Wallet,
+  X,
 } from 'lucide-react';
 
 type NurseTab = 'home' | 'visits' | 'care' | 'earnings' | 'profile';
@@ -64,19 +65,57 @@ function PrimaryButton({ children, onClick, tone = 'primary' }: { children: Reac
   );
 }
 
-function UploadRow({ title, subtitle }: { title: string; subtitle: string }) {
+function UploadRow({
+  title,
+  subtitle,
+  status = 'idle',
+  onUpload
+}: {
+  title: string;
+  subtitle: string;
+  status?: 'idle' | 'uploading' | 'completed';
+  onUpload?: () => void;
+}) {
   return (
-    <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-      <div className="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-        <FileText className="w-5 h-5 text-[#0F3D73]" />
+    <div className={`bg-white p-4 rounded-2xl border transition-all duration-300 ${status === 'completed' ? 'border-emerald-100 shadow-sm shadow-emerald-50' : 'border-slate-200 shadow-sm'}`}>
+      <div className="flex items-center gap-4">
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors ${status === 'completed' ? 'bg-emerald-50' : 'bg-blue-50'}`}>
+          {status === 'completed' ? (
+            <CheckCircle2 className="w-5 h-5 text-[#1FA97A]" />
+          ) : (
+            <FileText className={`w-5 h-5 ${status === 'uploading' ? 'text-blue-400 animate-pulse' : 'text-[#0F3D73]'}`} />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-slate-900 text-sm truncate">{title}</h3>
+          <p className="text-xs text-slate-500 mt-0.5 truncate">
+            {status === 'completed' ? 'document_uploaded.pdf' : subtitle}
+          </p>
+        </div>
+        <button
+          onClick={onUpload}
+          disabled={status !== 'idle'}
+          className={`w-10 h-10 rounded-full flex items-center justify-center border shrink-0 transition-all ${status === 'completed'
+              ? 'bg-emerald-500 border-emerald-500 text-white'
+              : status === 'uploading'
+                ? 'bg-slate-50 border-slate-100'
+                : 'bg-slate-50 border-slate-200 active:scale-90'
+            }`}
+        >
+          {status === 'uploading' ? (
+            <div className="w-5 h-5 border-2 border-[#0F3D73] border-t-transparent rounded-full animate-spin" />
+          ) : status === 'completed' ? (
+            <CheckCircle2 className="w-5 h-5" />
+          ) : (
+            <UploadCloud className="w-5 h-5 text-slate-600" />
+          )}
+        </button>
       </div>
-      <div className="flex-1">
-        <h3 className="font-semibold text-slate-900 text-sm">{title}</h3>
-        <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
-      </div>
-      <button className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-200 shrink-0">
-        <UploadCloud className="w-5 h-5 text-slate-600" />
-      </button>
+      {status === 'uploading' && (
+        <div className="mt-3 h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-full bg-[#0F3D73] animate-[progress_1.5s_ease-in-out_infinite]" style={{ width: '30%' }} />
+        </div>
+      )}
     </div>
   );
 }
@@ -168,32 +207,114 @@ export function NurseQualificationScreen({ onNext }: { onNext: () => void }) {
 }
 
 export function NurseDocumentUploadScreen({ onNext }: { onNext: () => void }) {
-  const docs = [
-    ['Aadhaar / ID proof', 'Government ID copy'],
-    ['Nursing qualification certificate', 'ANM, GNM, B.Sc or higher'],
-    ['Nursing council registration', 'If available'],
-    ['Experience certificate', 'If available'],
-    ['Recent photo', 'Clear front-facing photo'],
-    ['Address proof', 'Current address proof'],
-    ['Police verification', 'If available'],
-    ['Bank account details', 'For payout setup'],
-    ['PAN card', 'Required for payment records'],
-    ['Cancelled cheque / bank proof', 'Account verification'],
+  const [uploadStatus, setUploadStatus] = useState<Record<string, 'idle' | 'uploading' | 'completed'>>({});
+
+  const sections = [
+    {
+      title: 'Identity Proof',
+      docs: [
+        ['Aadhaar / ID proof', 'Government ID copy'],
+        ['Recent photo', 'Clear front-facing photo'],
+        ['Address proof', 'Current address proof'],
+      ]
+    },
+    {
+      title: 'Professional Qualifications',
+      docs: [
+        ['Nursing qualification certificate', 'ANM, GNM, B.Sc or higher'],
+        ['Nursing council registration', 'If available'],
+        ['Experience certificate', 'If available'],
+        ['Police verification', 'If available'],
+      ]
+    },
+    {
+      title: 'Payment Details',
+      docs: [
+        ['Bank account details', 'For payout setup'],
+        ['PAN card', 'Required for payment records'],
+        ['Cancelled cheque / bank proof', 'Account verification'],
+      ]
+    }
   ];
+
+  const allDocs = sections.flatMap(s => s.docs);
+  const completedCount = Object.values(uploadStatus).filter(s => s === 'completed').length;
+  const totalCount = allDocs.length;
+  const progress = (completedCount / totalCount) * 100;
+
+  const handleUpload = (title: string) => {
+    setUploadStatus(prev => ({ ...prev, [title]: 'uploading' }));
+    setTimeout(() => {
+      setUploadStatus(prev => ({ ...prev, [title]: 'completed' }));
+    }, 1500);
+  };
 
   return (
     <div className="flex flex-col min-h-full bg-[#F8FAFC]">
       <ProgressHeader step={3} total={4} title="Upload Documents" subtitle="Submit readable documents for PulseVisit verification." />
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-3">
-        {docs.map(([title, subtitle]) => (
-          <div key={title}>
-            <UploadRow title={title} subtitle={subtitle} />
+
+      <div className="flex-1 overflow-y-auto">
+        {/* Progress Summary Card */}
+        <div className="px-6 py-4">
+          <div className="bg-[#0F3D73] rounded-2xl p-5 text-white shadow-lg shadow-blue-900/20 relative overflow-hidden">
+            <div className="relative z-10">
+              <div className="flex justify-between items-end mb-2">
+                <div>
+                  <p className="text-blue-200 text-xs font-medium uppercase tracking-wider">Overall Progress</p>
+                  <h3 className="text-2xl font-bold">{completedCount} <span className="text-blue-300 text-lg">/ {totalCount}</span></h3>
+                </div>
+                <div className="text-right">
+                  <span className="text-sm font-bold text-blue-100">{Math.round(progress)}%</span>
+                </div>
+              </div>
+              <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#1FA97A] transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+            {/* Decorative circles */}
+            <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full" />
+            <div className="absolute -left-4 -bottom-4 w-16 h-16 bg-white/5 rounded-full" />
           </div>
-        ))}
+        </div>
+
+        <div className="px-6 pb-8 space-y-8">
+          {sections.map((section) => (
+            <div key={section.title} className="space-y-4">
+              <h2 className="text-xs font-bold text-slate-400 uppercase tracking-[0.15em] pl-1">{section.title}</h2>
+              <div className="space-y-3">
+                {section.docs.map(([title, subtitle]) => (
+                  <UploadRow
+                    key={title}
+                    title={title}
+                    subtitle={subtitle}
+                    status={uploadStatus[title] || 'idle'}
+                    onUpload={() => handleUpload(title)}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
       <div className="p-6 bg-white border-t border-slate-100">
-        <PrimaryButton onClick={onNext} tone="success">Submit for Verification</PrimaryButton>
+        <PrimaryButton
+          onClick={onNext}
+          tone={completedCount === totalCount ? 'success' : 'primary'}
+        >
+          {completedCount === totalCount ? 'Submit for Verification' : `Upload ${totalCount - completedCount} more to continue`}
+        </PrimaryButton>
       </div>
+
+      <style>{`
+        @keyframes progress {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(300%); }
+        }
+      `}</style>
     </div>
   );
 }
@@ -237,6 +358,7 @@ export function NurseVerificationStatusScreen({ onNext }: { onNext: () => void }
 export function NurseDashboardScreen({
   activeTab,
   setActiveTab,
+  onIncomingRequest,
   onOpenVisit,
   onOpenSkills,
   onOpenAvailability,
@@ -246,6 +368,7 @@ export function NurseDashboardScreen({
 }: {
   activeTab: NurseTab;
   setActiveTab: (tab: NurseTab) => void;
+  onIncomingRequest: () => void;
   onOpenVisit: () => void;
   onOpenSkills: () => void;
   onOpenAvailability: () => void;
@@ -253,12 +376,36 @@ export function NurseDashboardScreen({
   onOpenHelp: () => void;
   onLogout: () => void;
 }) {
+  const [isAvailable, setIsAvailable] = useState(true);
+
+  // Dev trigger for incoming request
+  useEffect(() => {
+    if (isAvailable && activeTab === 'home') {
+      const timer = setTimeout(() => {
+        onIncomingRequest();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isAvailable, activeTab, onIncomingRequest]);
+
   const renderContent = () => {
     if (activeTab === 'visits') return <NurseVisitsTab onOpenVisit={onOpenVisit} />;
     if (activeTab === 'care') return <NurseSubscriptionPatientsScreen compact />;
     if (activeTab === 'earnings') return <NurseEarningsScreen compact />;
     if (activeTab === 'profile') return <NurseProfileTab onOpenSkills={onOpenSkills} onOpenAvailability={onOpenAvailability} onOpenTraining={onOpenTraining} onOpenHelp={onOpenHelp} onLogout={onLogout} />;
-    return <NurseHomeTab onOpenVisit={onOpenVisit} onOpenSkills={onOpenSkills} onOpenAvailability={onOpenAvailability} onOpenTraining={onOpenTraining} onOpenHelp={onOpenHelp} onCare={() => setActiveTab('care')} onEarnings={() => setActiveTab('earnings')} />;
+    return (
+      <NurseHomeTab
+        isAvailable={isAvailable}
+        setIsAvailable={setIsAvailable}
+        onOpenVisit={onOpenVisit}
+        onOpenSkills={onOpenSkills}
+        onOpenAvailability={onOpenAvailability}
+        onOpenTraining={onOpenTraining}
+        onOpenHelp={onOpenHelp}
+        onCare={() => setActiveTab('care')}
+        onEarnings={() => setActiveTab('earnings')}
+      />
+    );
   };
 
   const nav = [
@@ -284,7 +431,17 @@ export function NurseDashboardScreen({
   );
 }
 
-function NurseHomeTab({ onOpenVisit, onOpenSkills, onOpenAvailability, onOpenTraining, onOpenHelp, onCare, onEarnings }: any) {
+function NurseHomeTab({
+  isAvailable,
+  setIsAvailable,
+  onOpenVisit,
+  onOpenSkills,
+  onOpenAvailability,
+  onOpenTraining,
+  onOpenHelp,
+  onCare,
+  onEarnings
+}: any) {
   const cards = [
     ['Today’s visits', '3', CalendarDays, 'bg-blue-50 text-[#0F3D73]'],
     ['Subscription patients', '8', HeartPulse, 'bg-emerald-50 text-[#1FA97A]'],
@@ -312,9 +469,19 @@ function NurseHomeTab({ onOpenVisit, onOpenSkills, onOpenAvailability, onOpenTra
             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border border-[#0F3D73]" />
           </button>
         </div>
-        <div className="bg-white rounded-2xl p-1 flex items-center relative z-10 shadow-inner">
-          <button className="flex-1 py-3 rounded-xl text-sm font-semibold text-slate-500">Offline</button>
-          <button className="flex-1 py-3 rounded-xl text-sm font-semibold bg-[#1FA97A] text-white shadow-md">Available</button>
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-1 flex items-center relative z-10 shadow-inner">
+          <button
+            onClick={() => setIsAvailable(false)}
+            className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${!isAvailable ? 'bg-white text-slate-900 shadow-md' : 'text-blue-100 hover:bg-white/5'}`}
+          >
+            Offline
+          </button>
+          <button
+            onClick={() => setIsAvailable(true)}
+            className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${isAvailable ? 'bg-[#1FA97A] text-white shadow-md' : 'text-blue-100 hover:bg-white/5'}`}
+          >
+            Available
+          </button>
         </div>
       </div>
 
@@ -442,33 +609,228 @@ export function NurseSkillsScreen({ onBack }: { onBack: () => void }) {
   return <SimpleListScreen title="Skills Offered" subtitle="Nurse can only receive tasks approved by admin." onBack={onBack} rows={skills} />;
 }
 
+function DayPill({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-12 h-14 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all ${active ? 'bg-[#0F3D73] text-white shadow-lg shadow-blue-900/20' : 'bg-white border border-slate-200 text-slate-500 hover:border-slate-300'}`}
+    >
+      <span className="text-[10px] font-bold uppercase tracking-wider">{label.substring(0, 3)}</span>
+      <span className="text-sm font-bold">{label === 'Sunday' ? 'S' : label === 'Monday' ? 'M' : label === 'Tuesday' ? 'T' : label === 'Wednesday' ? 'W' : label === 'Thursday' ? 'T' : label === 'Friday' ? 'F' : 'S'}</span>
+    </button>
+  );
+}
+
+function ZoneTag({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <div className="inline-flex items-center gap-1.5 bg-blue-50 text-[#0F3D73] px-3 py-1.5 rounded-full text-xs font-bold border border-blue-100">
+      {label}
+      <button onClick={onRemove} className="hover:text-blue-900">
+        <X className="w-3 h-3" />
+      </button>
+    </div>
+  );
+}
+
 export function NurseAvailabilityScreen({ onBack }: { onBack: () => void }) {
+  const [selectedDay, setSelectedDay] = useState('Monday');
+  const [distance, setDistance] = useState(15);
+  const [zones, setZones] = useState(['Indiranagar', 'Domlur', 'Koramangala', 'HSR Layout']);
+  const [isOnline, setIsOnline] = useState(true);
+
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const slots = [
+    { label: 'Early Morning', range: '6 AM - 9 AM', icon: Clock },
+    { label: 'Morning Slot', range: '9 AM - 1 PM', icon: Clock },
+    { label: 'Afternoon Slot', range: '1 PM - 5 PM', icon: Clock },
+    { label: 'Evening Slot', range: '5 PM - 9 PM', icon: Clock },
+    { label: 'Night Shift', range: '9 PM - 2 AM', icon: Clock },
+  ];
+
   return (
     <div className="flex flex-col h-full bg-[#F8FAFC]">
       <ScreenHeader title="Set Availability" onBack={onBack} />
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
-        <div className="grid grid-cols-2 gap-3">
-          {['Available', 'Busy', 'On Visit', 'Offline', 'On Leave', 'Emergency replacement'].map((item, index) => (
-            <div key={item}>
-              <CheckboxPill label={item} checked={index === 0} />
+
+      <div className="flex-1 overflow-y-auto pb-8">
+        {/* Active Toggle Header */}
+        <div className="px-6 py-6">
+          <div className={`p-5 rounded-3xl border transition-all ${isOnline ? 'bg-emerald-50 border-emerald-100' : 'bg-slate-100 border-slate-200'}`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className={`font-bold ${isOnline ? 'text-emerald-900' : 'text-slate-900'}`}>Accepting New Visits</h3>
+                <p className={`text-xs mt-0.5 ${isOnline ? 'text-emerald-700' : 'text-slate-500'}`}>
+                  {isOnline ? 'You are currently visible to patients' : 'You are currently hidden from search'}
+                </p>
+              </div>
+              <button
+                onClick={() => setIsOnline(!isOnline)}
+                className={`w-14 h-8 rounded-full relative transition-colors ${isOnline ? 'bg-[#1FA97A]' : 'bg-slate-300'}`}
+              >
+                <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all shadow-sm ${isOnline ? 'left-7' : 'left-1'}`} />
+              </button>
             </div>
-          ))}
+          </div>
         </div>
-        <div className="space-y-3">
-          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Slots</h2>
-          {['Morning slot', 'Afternoon slot', 'Evening slot', 'Night slot'].map((item, index) => (
-            <div key={item}>
-              <CheckboxPill label={item} checked={index < 2} />
+
+        <div className="px-6 space-y-8">
+          {/* Weekly Schedule */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Weekly Schedule</h2>
+              <span className="text-[10px] font-bold text-[#0F3D73] bg-blue-50 px-2 py-0.5 rounded">Repeating weekly</span>
             </div>
-          ))}
+            <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+              {days.map(day => (
+                <DayPill
+                  key={day}
+                  label={day}
+                  active={selectedDay === day}
+                  onClick={() => setSelectedDay(day)}
+                />
+              ))}
+            </div>
+
+            <div className="bg-white rounded-3xl border border-slate-100 p-5 space-y-4 shadow-sm">
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Slots for {selectedDay}</p>
+              <div className="space-y-3">
+                {slots.map((slot, index) => (
+                  <label key={slot.label} className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${index < 2 ? 'bg-blue-50/30 border-blue-100' : 'bg-white border-slate-100'}`}>
+                    <div className="flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${index < 2 ? 'bg-blue-100 text-[#0F3D73]' : 'bg-slate-50 text-slate-400'}`}>
+                        <slot.icon className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">{slot.label}</p>
+                        <p className="text-[10px] text-slate-500 font-medium">{slot.range}</p>
+                      </div>
+                    </div>
+                    <input type="checkbox" defaultChecked={index < 2} className="w-5 h-5 accent-[#0F3D73] rounded-lg" />
+                  </label>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Travel & Zones */}
+          <section className="space-y-4">
+            <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Travel & Zones</h2>
+            <div className="bg-white rounded-3xl border border-slate-100 p-6 space-y-6 shadow-sm">
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <p className="text-sm font-bold text-slate-900">Max Travel Distance</p>
+                  <p className="text-lg font-black text-[#0F3D73]">{distance} <span className="text-xs text-slate-400">km</span></p>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="50"
+                  value={distance}
+                  onChange={(e) => setDistance(parseInt(e.target.value))}
+                  className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#0F3D73]"
+                />
+                <div className="flex justify-between text-[10px] font-bold text-slate-400 px-1">
+                  <span>1 KM</span>
+                  <span>25 KM</span>
+                  <span>50 KM</span>
+                </div>
+              </div>
+
+              <div className="h-px bg-slate-50" />
+
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm font-bold text-slate-900">Preferred Zones</p>
+                  <button className="text-[10px] font-bold text-[#0F3D73] flex items-center gap-1">
+                    <MapPin className="w-3 h-3" /> ADD NEW
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {zones.map(zone => (
+                    <ZoneTag
+                      key={zone}
+                      label={zone}
+                      onRemove={() => setZones(zones.filter(z => z !== zone))}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Additional Preferences */}
+          <section className="space-y-4">
+            <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Additional Prefs</h2>
+            <div className="grid grid-cols-1 gap-3">
+              <CheckboxPill label="Have my own vehicle" checked />
+              <CheckboxPill label="Willing to travel beyond max distance for emergencies" />
+              <CheckboxPill label="Available for 24/7 stay-at-home care" />
+              <CheckboxPill label="Can provide immediate emergency replacement" checked />
+            </div>
+          </section>
         </div>
-        <input className={inputClass} placeholder="Preferred areas" defaultValue="Indiranagar, Domlur, Koramangala" />
-        <input className={inputClass} placeholder="Maximum travel distance" defaultValue="8 km" />
-        <CheckboxPill label="Own vehicle" checked />
-        <CheckboxPill label="Can accept long-term patient" checked />
       </div>
+
       <div className="p-6 bg-white border-t border-slate-100">
-        <PrimaryButton onClick={onBack} tone="success">Save Availability</PrimaryButton>
+        <PrimaryButton onClick={onBack} tone="success">Save Availability Settings</PrimaryButton>
+      </div>
+    </div>
+  );
+}
+
+function OtpModal({
+  isOpen,
+  onClose,
+  onVerify,
+  title,
+  description
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onVerify: () => void;
+  title: string;
+  description: string;
+}) {
+  const [otp, setOtp] = useState('');
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
+      <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="bg-white w-full max-w-sm rounded-[32px] p-8 relative z-10 shadow-2xl animate-in fade-in zoom-in duration-300">
+        <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
+          <ShieldCheck className="w-8 h-8 text-[#0F3D73]" />
+        </div>
+        <h3 className="text-xl font-bold text-slate-900 text-center mb-2">{title}</h3>
+        <p className="text-sm text-slate-500 text-center mb-8">{description}</p>
+
+        <div className="space-y-6">
+          <input
+            type="number"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-5 focus:outline-none focus:ring-2 focus:ring-[#0F3D73]/20 focus:border-[#0F3D73] transition-all text-center tracking-[0.5em] font-bold text-3xl"
+            placeholder="••••"
+            maxLength={4}
+          />
+          <div className="flex gap-3">
+            <button
+              onClick={onClose}
+              className="flex-1 py-4 rounded-xl font-semibold text-slate-500 bg-slate-50 border border-slate-200"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                if (otp.length === 4) onVerify();
+              }}
+              disabled={otp.length !== 4}
+              className="flex-[2] bg-[#0F3D73] text-white rounded-xl py-4 font-semibold shadow-lg shadow-[#0F3D73]/20 active:scale-[0.98] transition-all disabled:opacity-50"
+            >
+              Verify OTP
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -476,7 +838,30 @@ export function NurseAvailabilityScreen({ onBack }: { onBack: () => void }) {
 
 export function NurseVisitFlowScreen({ onBack, onComplete }: { onBack: () => void; onComplete: () => void }) {
   const [step, setStep] = useState(0);
+  const [showOtp, setShowOtp] = useState(false);
+  const [pendingStep, setPendingStep] = useState<number | null>(null);
+
   const steps = ['Visit Accepted', 'Travel Started', 'Arrived', 'Start Service', 'Record Vitals', 'Complete Task'];
+
+  const handleNext = () => {
+    if (step === 2) {
+      setPendingStep(3);
+      setShowOtp(true);
+    } else if (step === 4) {
+      setPendingStep(5);
+      setShowOtp(true);
+    } else {
+      setStep(step + 1);
+    }
+  };
+
+  const handleOtpVerify = () => {
+    if (pendingStep !== null) {
+      setStep(pendingStep);
+      setPendingStep(null);
+      setShowOtp(false);
+    }
+  };
 
   return (
     <div className="flex flex-col h-full bg-[#F8FAFC]">
@@ -523,11 +908,22 @@ export function NurseVisitFlowScreen({ onBack, onComplete }: { onBack: () => voi
       </div>
       <div className="p-6 bg-white border-t border-slate-100">
         {step < steps.length - 1 ? (
-          <PrimaryButton onClick={() => setStep(step + 1)}>{step === 0 ? 'Start Journey' : step === 1 ? 'Mark Arrived' : step === 2 ? 'Start Visit' : step === 3 ? 'Record Vitals' : 'Complete Task'}</PrimaryButton>
+          <PrimaryButton onClick={handleNext}>{step === 0 ? 'Start Journey' : step === 1 ? 'Mark Arrived' : step === 2 ? 'Start Visit' : step === 3 ? 'Record Vitals' : 'Complete Task'}</PrimaryButton>
         ) : (
           <PrimaryButton onClick={onComplete} tone="success">Complete Visit</PrimaryButton>
         )}
       </div>
+
+      <OtpModal
+        isOpen={showOtp}
+        onClose={() => setShowOtp(false)}
+        onVerify={handleOtpVerify}
+        title={step === 2 ? "Start Service" : "Complete Task"}
+        description={step === 2
+          ? "Ask the patient for the START OTP to begin the home-care service."
+          : "Ask the patient for the END OTP to finalize the visit and record completion."
+        }
+      />
     </div>
   );
 }
