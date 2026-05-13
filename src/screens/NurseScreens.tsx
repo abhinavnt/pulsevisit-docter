@@ -23,6 +23,10 @@ import {
   User,
   Wallet,
   X,
+  TrendingUp,
+  ArrowUpRight,
+  Layers,
+  Clock3
 } from 'lucide-react';
 
 type NurseTab = 'home' | 'visits' | 'care' | 'earnings' | 'profile';
@@ -1051,27 +1055,141 @@ function CarePlanCard({ name, plan, frequency, next }: { name: string; plan: str
 }
 
 export function NurseEarningsScreen({ onBack, compact = false }: { onBack?: () => void; compact?: boolean }) {
-  const rows = [
-    ['Elderly care visit', '+ Rs. 650', 'Payout pending'],
-    ['Vitals check', '+ Rs. 300', 'Approved'],
-    ['Dressing visit', '+ Rs. 500', 'Paid'],
+  const [activeFilter, setActiveFilter] = useState<'all' | 'one-time' | 'subscription'>('all');
+  
+  const stats = [
+    { label: 'Total Earned', value: 'Rs. 12,850', icon: TrendingUp, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Visits Done', value: '24', icon: Activity, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Subscription', value: 'Rs. 8,400', icon: Layers, color: 'text-purple-600', bg: 'bg-purple-50' },
   ];
+
+  const chartData = [
+    { day: 'Mon', amount: 800, height: 'h-12' },
+    { day: 'Tue', amount: 1200, height: 'h-20' },
+    { day: 'Wed', amount: 650, height: 'h-10' },
+    { day: 'Thu', amount: 1500, height: 'h-24' },
+    { day: 'Fri', amount: 900, height: 'h-14' },
+    { day: 'Sat', amount: 1100, height: 'h-18' },
+    { day: 'Sun', amount: 0, height: 'h-0' },
+  ];
+
+  const transactions = [
+    { title: 'Elderly Care Visit', date: 'Today, 5:30 PM', amount: 650, type: 'one-time', status: 'Pending Approval', icon: User },
+    { title: 'Monthly Vitals Plan', date: '12 May, 2024', amount: 1200, type: 'subscription', status: 'Approved', icon: Layers },
+    { title: 'Wound Dressing', date: '11 May, 2024', amount: 500, type: 'one-time', status: 'Paid', icon: Activity },
+    { title: 'Post-Op Monitoring', date: '10 May, 2024', amount: 850, type: 'subscription', status: 'Paid', icon: ShieldCheck },
+  ];
+
+  const filteredTransactions = transactions.filter(t => activeFilter === 'all' || t.type === activeFilter);
+
   const body = (
-    <div className={`${compact ? 'h-full' : 'flex-1'} overflow-y-auto px-6 py-6 space-y-4 ${compact ? 'pb-24' : ''}`}>
-      <div className="bg-[#0F3D73] rounded-3xl p-6 text-white shadow-xl shadow-[#0F3D73]/20">
-        <p className="text-blue-200 text-sm font-medium mb-1">Available Balance</p>
-        <h2 className="text-4xl font-bold mb-6">Rs. 2,450</h2>
-        <button className="w-full bg-white text-[#0F3D73] rounded-xl py-3 font-bold">Request Payout</button>
-      </div>
-      {rows.map(([title, amount, status]) => (
-        <div key={title} className="bg-white rounded-2xl border border-slate-100 p-4 flex items-center justify-between">
-          <div>
-            <h3 className="font-semibold text-slate-900 text-sm">{title}</h3>
-            <p className="text-xs text-slate-500 mt-1">{status}</p>
+    <div className={`${compact ? 'h-full' : 'flex-1'} overflow-y-auto px-6 py-6 space-y-8 ${compact ? 'pb-24' : ''}`}>
+      {/* Balance Card */}
+      <div className="bg-[#0F3D73] rounded-[32px] p-8 text-white shadow-2xl shadow-[#0F3D73]/30 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full -ml-12 -mb-12" />
+        
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 text-blue-200 mb-2">
+            <Wallet className="w-4 h-4" />
+            <span className="text-sm font-medium">Available for Payout</span>
           </div>
-          <p className="font-bold text-[#1FA97A]">{amount}</p>
+          <h2 className="text-4xl font-bold mb-8 flex items-baseline gap-1">
+            <span className="text-2xl font-medium">Rs.</span> 2,450
+          </h2>
+          
+          <div className="flex gap-3">
+            <button className="flex-1 bg-white text-[#0F3D73] rounded-2xl py-4 font-bold text-sm shadow-lg active:scale-95 transition-all">
+              Request Payout
+            </button>
+            <button className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20 active:scale-95 transition-all">
+              <ArrowUpRight className="w-6 h-6 text-white" />
+            </button>
+          </div>
         </div>
-      ))}
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-3 gap-3">
+        {stats.map((s) => (
+          <div key={s.label} className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center text-center">
+            <div className={`w-8 h-8 rounded-full ${s.bg} ${s.color} flex items-center justify-center mb-2`}>
+              <s.icon className="w-4 h-4" />
+            </div>
+            <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mb-1">{s.label}</p>
+            <p className="text-xs font-bold text-slate-900">{s.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Earnings Chart */}
+      <div className="bg-white rounded-[32px] border border-slate-100 p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="font-bold text-slate-900">Earnings this week</h3>
+          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full uppercase">May 07 - May 13</span>
+        </div>
+        
+        <div className="flex items-end justify-between gap-2 h-32 mb-4">
+          {chartData.map((d) => (
+            <div key={d.day} className="flex-1 flex flex-col items-center gap-2 group">
+              <div className="w-full relative">
+                <div className={`w-full ${d.height} bg-slate-100 rounded-lg group-hover:bg-[#0F3D73] transition-all duration-300 relative`}>
+                   {d.amount > 0 && (
+                     <div className="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[9px] font-bold px-1.5 py-0.5 rounded pointer-events-none">
+                       {d.amount}
+                     </div>
+                   )}
+                </div>
+              </div>
+              <span className="text-[10px] font-bold text-slate-400">{d.day}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Transactions Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-slate-900">Recent Activity</h3>
+          <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
+            {(['all', 'one-time', 'subscription'] as const).map(f => (
+              <button 
+                key={f}
+                onClick={() => setActiveFilter(f)}
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold capitalize transition-all ${activeFilter === f ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400'}`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {filteredTransactions.map((t, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-slate-100 p-4 flex items-center gap-4 hover:border-blue-100 transition-colors">
+              <div className={`w-12 h-12 rounded-2xl ${t.type === 'subscription' ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-600'} flex items-center justify-center shrink-0`}>
+                <t.icon className="w-6 h-6" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-bold text-slate-900 text-sm truncate">{t.title}</h4>
+                <div className="flex items-center gap-2 mt-1">
+                  <p className="text-[10px] text-slate-500">{t.date}</p>
+                  <span className={`w-1 h-1 rounded-full bg-slate-300`} />
+                  <p className={`text-[10px] font-bold ${t.status === 'Paid' ? 'text-emerald-600' : 'text-amber-600'}`}>{t.status}</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-bold text-slate-900">Rs. {t.amount}</p>
+                <p className="text-[10px] text-slate-400 capitalize">{t.type}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <button className="w-full py-4 text-sm font-bold text-[#0F3D73] bg-blue-50/50 rounded-2xl hover:bg-blue-50 transition-colors">
+          View Full History
+        </button>
+      </div>
     </div>
   );
 
