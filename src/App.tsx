@@ -13,6 +13,7 @@ import { NavigationScreen } from './screens/NavigationScreen';
 import { ReachedConfirmationScreen } from './screens/ReachedConfirmationScreen';
 import { ConsultationOngoingScreen } from './screens/ConsultationOngoingScreen';
 import { PrescriptionUploadScreen } from './screens/PrescriptionUploadScreen';
+import { CarePlanSelectionScreen } from './screens/CarePlanSelectionScreen';
 import { CompletionOtpScreen } from './screens/CompletionOtpScreen';
 import { PayoutRequestScreen } from './screens/PayoutRequestScreen';
 import {
@@ -42,6 +43,7 @@ type ScreenState =
   | 'REACHED_CONFIRMATION'
   | 'CONSULTATION_ONGOING'
   | 'PRESCRIPTION_UPLOAD'
+  | 'CARE_PLAN_SELECTION'
   | 'COMPLETION_OTP'
   | 'PAYOUT_REQUEST'
   | 'NURSE_REGISTRATION'
@@ -148,7 +150,9 @@ export default function App() {
       case 'CONSULTATION_ONGOING':
         return <ConsultationOngoingScreen onUploadPrescription={() => setCurrentScreen('PRESCRIPTION_UPLOAD')} />;
       case 'PRESCRIPTION_UPLOAD':
-        return <PrescriptionUploadScreen onSubmit={() => setCurrentScreen('COMPLETION_OTP')} />;
+        return <PrescriptionUploadScreen onSubmit={() => setCurrentScreen('CARE_PLAN_SELECTION')} />;
+      case 'CARE_PLAN_SELECTION':
+        return <CarePlanSelectionScreen onComplete={() => setCurrentScreen('COMPLETION_OTP')} />;
       case 'COMPLETION_OTP':
         return <CompletionOtpScreen onComplete={() => setCurrentScreen('DASHBOARD')} />;
       case 'PAYOUT_REQUEST':
